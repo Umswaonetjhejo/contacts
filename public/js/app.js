@@ -2093,10 +2093,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      edit: true,
+      edit: false,
       list: [],
       contact: {
         id: '',
@@ -2109,15 +2117,67 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     console.log('Contacts Component Loaded...');
+    this.fetchContactList();
   },
   methods: {
+    fetchContactList: function fetchContactList() {
+      var _this = this;
+
+      console.log('Fetching contacts...');
+      axios.get('api/contacts').then(function (response) {
+        console.log(response.data);
+        _this.list = response.data;
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     createContact: function createContact() {
       console.log('Creating contact...');
-      return;
+      var self = this;
+      var params = Object.assign({}, self.contact);
+      axios.post('api/contact/store', params).then(function () {
+        self.contact.name = '';
+        self.contact.email = '';
+        self.contact.gender = '';
+        self.contact.content = '';
+        self.edit = false;
+        self.fetchContactList();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    showContact: function showContact(id) {
+      var self = this;
+      axios.get('api/contact/' + id).then(function (response) {
+        self.contact.id = response.data.id;
+        self.contact.name = response.data.name;
+        self.contact.email = response.data.email;
+        self.contact.gender = response.data.gender;
+        self.contact.content = response.data.content;
+      });
+      self.edit = true;
     },
     updateContact: function updateContact(id) {
       console.log('Updating contact ' + id + '...');
-      return;
+      var self = this;
+      var params = Object.assign({}, self.contact);
+      axios.patch('api/contact/' + id, params).then(function () {
+        self.contact.name = '';
+        self.contact.email = '';
+        self.contact.gender = '';
+        self.contact.content = '';
+        self.edit = false;
+        self.fetchContactList();
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    deleteContact: function deleteContact(id) {
+      axios["delete"]('api/contact/' + id).then(function (response) {
+        self.fetchContactList();
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   }
 });
@@ -2138,6 +2198,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js")["default"];
+
+var axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -2147,6 +2209,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js"
  */
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
+
 
 Vue.component('contacts', __webpack_require__(/*! ./components/contacts.vue */ "./resources/js/components/contacts.vue")["default"]);
 /**
@@ -37602,7 +37665,7 @@ var render = function () {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h1", [_vm._v("Contacts")]),
+    _c("h1", [_vm._v("Add Contact")]),
     _vm._v(" "),
     _c(
       "form",
@@ -37669,7 +37732,7 @@ var render = function () {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Phone")]),
+          _c("label", [_vm._v("Gender")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -37695,9 +37758,9 @@ var render = function () {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", [_vm._v("Phone")]),
+          _c("label", [_vm._v("Content")]),
           _vm._v(" "),
-          _c("textarea", {
+          _c("input", {
             directives: [
               {
                 name: "model",
@@ -37756,6 +37819,53 @@ var render = function () {
           ),
         ]),
       ]
+    ),
+    _vm._v(" "),
+    _c("h1", [_vm._v("Contacts")]),
+    _vm._v(" "),
+    _c(
+      "ul",
+      { staticClass: "list-group" },
+      _vm._l(_vm.list, function (contact) {
+        return _c("li", { staticClass: "list-group-item" }, [
+          _c("strong", [_vm._v(_vm._s(contact.name))]),
+          _vm._v(
+            " " +
+              _vm._s(contact.email) +
+              " " +
+              _vm._s(contact.gender) +
+              " " +
+              _vm._s(contact.content) +
+              "\n            "
+          ),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-default btn-xs",
+              on: {
+                click: function ($event) {
+                  return _vm.showContact(contact.id)
+                },
+              },
+            },
+            [_vm._v("Edit")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-danger btn-xs",
+              on: {
+                click: function ($event) {
+                  return _vm.deleteContact(contact.id)
+                },
+              },
+            },
+            [_vm._v("Delete")]
+          ),
+        ])
+      }),
+      0
     ),
   ])
 }

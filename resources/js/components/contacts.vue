@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Contacts</h1>
+        <h1>Add Contact</h1>
         <form action="#" @submit.prevent="edit ? updateContact(contact.id) : createContact()">
             <div class="form-group">
                 <label>Name</label>
@@ -11,18 +11,26 @@
                 <input v-model="contact.email" type="text" name="email" class="form-control">
             </div>
             <div class="form-group">
-                <label>Phone</label>
+                <label>Gender</label>
                 <input v-model="contact.gender" type="text" name="gender" class="form-control">
             </div>
             <div class="form-group">
-                <label>Phone</label>
-                <textarea v-model="contact.content" type="text" name="content" class="form-control"></textarea>
+                <label>Content</label>
+                <input v-model="contact.content" type="text" name="content" class="form-control">
             </div>
             <div class="form-group">
                 <button v-show="!edit" type="submit" class="btn btn-primary">New Contact</button>
                 <button v-show="edit" type="submit" class="btn btn-primary">Update Contact</button>
             </div>
         </form>
+        <h1>Contacts</h1>
+        <ul class="list-group">
+            <li class="list-group-item" v-for="contact in list">
+                <strong>{{contact.name}}</strong> {{contact.email}} {{contact.gender}} {{contact.content}}
+                <button @click="showContact(contact.id)" class="btn btn-default btn-xs">Edit</button>
+                <button @click="deleteContact(contact.id)" class="btn btn-danger btn-xs">Delete</button>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -30,7 +38,7 @@
 export default {
     data: function(){
         return {
-            edit:true,
+            edit:false,
             list:[],
             contact:{
                 id:'',
@@ -43,15 +51,73 @@ export default {
     },
     mounted: function(){
         console.log('Contacts Component Loaded...');
+        this.fetchContactList();
     },
     methods: {
+        fetchContactList:function(){
+            console.log('Fetching contacts...');
+            axios.get('api/contacts')
+                .then((response) => {
+                    console.log(response.data);
+                    this.list = response.data;
+                }).catch((error) => {
+                console.log(error);
+            });
+        },
         createContact: function(){
             console.log('Creating contact...');
-            return;
+            let self = this;
+            let params =Object.assign({}, self.contact);
+            axios.post('api/contact/store', params)
+                .then(function(){
+                    self.contact.name = '';
+                    self.contact.email = '';
+                    self.contact.gender = '';
+                    self.contact.content = '';
+                    self.edit = false;
+                    self.fetchContactList();
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+        },
+        showContact: function(id){
+            let self = this;
+            axios.get('api/contact/'+id)
+                .then(function(response){
+                    self.contact.id = response.data.id;
+                    self.contact.name = response.data.name;
+                    self.contact.email = response.data.email;
+                    self.contact.gender = response.data.gender;
+                    self.contact.content = response.data.content;
+                })
+            self.edit = true;
         },
         updateContact: function(id){
             console.log('Updating contact '+id+'...');
-            return;
+            let self = this;
+            let params =Object.assign({}, self.contact);
+            axios.patch('api/contact/'+id, params)
+                .then(function(){
+                    self.contact.name = '';
+                    self.contact.email = '';
+                    self.contact.gender = '';
+                    self.contact.content = '';
+                    self.edit = false;
+                    self.fetchContactList();
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+        },
+        deleteContact: function(id){
+            axios.delete('api/contact/'+id)
+                .then(function(response){
+                    self.fetchContactList();
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
         }
     }
 }
