@@ -23,6 +23,8 @@ let axios = require('axios');
 
 Vue.component('contacts', require('./components/contacts.vue').default);
 
+Vue.prototype.$userId = document.querySelector("meta[name='user_id']").getAttribute('content');
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

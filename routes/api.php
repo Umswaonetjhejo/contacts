@@ -15,6 +15,10 @@ use App\Models\Contact;
 |
 */
 
+//Route::post('login', [App\Http\Controllers\Auth\LoginController::Controller::class, 'login']);
+//Route::post('register', [App\Http\Controllers\Auth\RegisterController::Controller::class, 'register']);
+//Route::post('logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

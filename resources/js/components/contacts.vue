@@ -1,7 +1,40 @@
 <template>
-    <div>
+    <div v-if="user_id !== ''">
+        <h1>Contacts</h1>
+<!--        <ul class="list-group">-->
+<!--            <li class="list-group-item" v-for="contact in list">-->
+<!--                <strong>{{contact.name}}</strong> {{contact.email}} {{contact.gender}} {{contact.content}}-->
+<!--                <button @click="showContact(contact.id)" class="btn btn-default btn-xs">Edit</button>-->
+<!--                <button @click="deleteContact(contact.id)" class="btn btn-danger btn-xs">Delete</button>-->
+<!--            </li>-->
+<!--        </ul>-->
+
+        <table class="table table-dark table-striped">
+            <thead>
+            <tr>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>GENDER</th>
+                <th>CONTENT</th>
+            </tr>
+            </thead>
+            <tbody v-for="contact in list">
+            <tr>
+                <td>{{contact.name}}</td>
+                <td>{{contact.email}}</td>
+                <td>{{contact.gender}}</td>
+                <td>{{contact.content}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div v-else>
         <h1>Add Contact</h1>
-        <form action="#" @submit.prevent="edit ? updateContact(contact.id) : createContact()">
+        <div class="alert alert-success" v-show="success">
+            Contact strored successfully
+        </div>
+        <form ref="form" action="#" @submit.prevent="edit ? updateContact(contact.id) : createContact()">
             <div class="form-group">
                 <label>Name</label>
                 <input v-model="contact.name" type="text" name="name" class="form-control">
@@ -23,21 +56,18 @@
                 <button v-show="edit" type="submit" class="btn btn-primary">Update Contact</button>
             </div>
         </form>
-        <h1>Contacts</h1>
-        <ul class="list-group">
-            <li class="list-group-item" v-for="contact in list">
-                <strong>{{contact.name}}</strong> {{contact.email}} {{contact.gender}} {{contact.content}}
-                <button @click="showContact(contact.id)" class="btn btn-default btn-xs">Edit</button>
-                <button @click="deleteContact(contact.id)" class="btn btn-danger btn-xs">Delete</button>
-            </li>
-        </ul>
     </div>
+
 </template>
 
 <script>
+import emailjs from 'emailjs-com';
+
 export default {
+    props: ['app'],
     data: function(){
         return {
+            user_id: this.$userId,
             edit:false,
             list:[],
             contact:{
@@ -46,7 +76,8 @@ export default {
                 email:'',
                 gender:'',
                 content:''
-            }
+            },
+            success: false
         }
     },
     mounted: function(){
@@ -70,15 +101,32 @@ export default {
             let params =Object.assign({}, self.contact);
             axios.post('api/contact/store', params)
                 .then(function(){
+                    self.sendEmail();
                     self.contact.name = '';
                     self.contact.email = '';
                     self.contact.gender = '';
                     self.contact.content = '';
                     self.edit = false;
+                    self.success = true;
+
                     self.fetchContactList();
                 })
                 .catch(function(error){
                     console.log(error);
+                });
+        },
+        sendEmail() {
+            emailjs.sendForm('service_kknufk8', 'template_0enb458', this.$refs.form, 'user_F85Q9lJu8pWXwdIlLkBpX',
+                {
+                    name: this.name,
+                    email: this.email,
+                    gender: this.gender,
+                    content: this.content
+                })
+                .then((result) => {
+                    console.log('SUCCESS!', result.text);
+                }, (error) => {
+                    console.log('FAILED...', error.text);
                 });
         },
         showContact: function(id){
@@ -119,6 +167,9 @@ export default {
                     console.log(error);
                 });
         }
+    },
+    created(){
+        console.log(this.$userId)
     }
 }
 </script>
