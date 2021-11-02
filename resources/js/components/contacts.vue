@@ -1,15 +1,12 @@
 <template>
     <div v-if="user_id !== ''">
         <h1>Contacts</h1>
-<!--        <ul class="list-group">-->
-<!--            <li class="list-group-item" v-for="contact in list">-->
-<!--                <strong>{{contact.name}}</strong> {{contact.email}} {{contact.gender}} {{contact.content}}-->
-<!--                <button @click="showContact(contact.id)" class="btn btn-default btn-xs">Edit</button>-->
-<!--                <button @click="deleteContact(contact.id)" class="btn btn-danger btn-xs">Delete</button>-->
-<!--            </li>-->
-<!--        </ul>-->
 
-        <table class="table table-dark table-striped">
+        <div class="form-group">
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search">
+        </div>
+
+        <table class="table table-dark table-striped" id="myTable">
             <thead>
             <tr>
                 <th>NAME</th>
@@ -32,7 +29,7 @@
     <div v-else>
         <h1>Add Contact</h1>
         <div class="alert alert-success" v-show="success">
-            Contact strored successfully
+            Contact stored successfully
         </div>
         <form ref="form" action="#" @submit.prevent="edit ? updateContact(contact.id) : createContact()">
             <div class="form-group">

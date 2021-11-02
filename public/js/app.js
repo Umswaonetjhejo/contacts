@@ -2125,9 +2125,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['app'],
@@ -37976,11 +37973,16 @@ var render = function () {
     ? _c("div", [
         _c("h1", [_vm._v("Contacts")]),
         _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
         _c(
           "table",
-          { staticClass: "table table-dark table-striped" },
+          {
+            staticClass: "table table-dark table-striped",
+            attrs: { id: "myTable" },
+          },
           [
-            _vm._m(0),
+            _vm._m(1),
             _vm._v(" "),
             _vm._l(_vm.list, function (contact) {
               return _c("tbody", [
@@ -38015,7 +38017,7 @@ var render = function () {
             ],
             staticClass: "alert alert-success",
           },
-          [_vm._v("\n            Contact strored successfully\n        ")]
+          [_vm._v("\n        Contact stored successfully\n    ")]
         ),
         _vm._v(" "),
         _c(
@@ -38177,6 +38179,21 @@ var render = function () {
       ])
 }
 var staticRenderFns = [
+  function () {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "form-group" }, [
+      _c("input", {
+        attrs: {
+          type: "text",
+          id: "myInput",
+          onkeyup: "myFunction()",
+          placeholder: "Search",
+        },
+      }),
+    ])
+  },
   function () {
     var _vm = this
     var _h = _vm.$createElement
