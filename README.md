@@ -1,6 +1,7 @@
-## Contacts
+## Contacts Application
 
 This is a small online app that stores and desplay contacts. An email is sent after submitting contacts successfully.
+You will need to login to the application to view the contacts.
 
 ## Frameworks
 
