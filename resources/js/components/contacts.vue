@@ -42,7 +42,9 @@
             </div>
             <div class="form-group">
                 <label>Gender</label>
-                <input v-model="contact.gender" type="text" name="gender" class="form-control">
+                <select v-model="contact.gender" name="gender" class="form-control">
+                    <option v-for="gender in genders">{{gender}}</option>
+                </select>
             </div>
             <div class="form-group">
                 <label>Content</label>
@@ -74,7 +76,8 @@ export default {
                 gender:'',
                 content:''
             },
-            success: false
+            success: false,
+            genders:['Male', 'Female']
         }
     },
     mounted: function(){
@@ -113,7 +116,7 @@ export default {
                 });
         },
         sendEmail() {
-            emailjs.sendForm('service_kknufk8', 'template_0enb458', this.$refs.form, 'user_F85Q9lJu8pWXwdIlLkBpX',
+            emailjs.sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this.$refs.form, 'YOUR_USER_ID',
                 {
                     name: this.name,
                     email: this.email,
@@ -166,7 +169,10 @@ export default {
         }
     },
     created(){
-        console.log(this.$userId)
+        console.log(this.$userId);
+        console.log(this.$serviceId);
+        console.log(this.$templateId);
+        console.log(this.$uId);
     }
 }
 </script>

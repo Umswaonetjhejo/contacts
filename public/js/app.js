@@ -2125,6 +2125,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['app'],
@@ -2140,7 +2142,8 @@ __webpack_require__.r(__webpack_exports__);
         gender: '',
         content: ''
       },
-      success: false
+      success: false,
+      genders: ['Male', 'Female']
     };
   },
   mounted: function mounted() {
@@ -2177,7 +2180,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     sendEmail: function sendEmail() {
-      emailjs_com__WEBPACK_IMPORTED_MODULE_0__["default"].sendForm('service_kknufk8', 'template_0enb458', this.$refs.form, 'user_F85Q9lJu8pWXwdIlLkBpX', {
+      emailjs_com__WEBPACK_IMPORTED_MODULE_0__["default"].sendForm('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', this.$refs.form, 'YOUR_USER_ID', {
         name: this.name,
         email: this.email,
         gender: this.gender,
@@ -2224,6 +2227,9 @@ __webpack_require__.r(__webpack_exports__);
   },
   created: function created() {
     console.log(this.$userId);
+    console.log(this.$serviceId);
+    console.log(this.$templateId);
+    console.log(this.$uId);
   }
 });
 
@@ -38090,27 +38096,44 @@ var render = function () {
             _c("div", { staticClass: "form-group" }, [
               _c("label", [_vm._v("Gender")]),
               _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.contact.gender,
-                    expression: "contact.gender",
-                  },
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", name: "gender" },
-                domProps: { value: _vm.contact.gender },
-                on: {
-                  input: function ($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.contact, "gender", $event.target.value)
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.contact.gender,
+                      expression: "contact.gender",
+                    },
+                  ],
+                  staticClass: "form-control",
+                  attrs: { name: "gender" },
+                  on: {
+                    change: function ($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function (o) {
+                          return o.selected
+                        })
+                        .map(function (o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.contact,
+                        "gender",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    },
                   },
                 },
-              }),
+                _vm._l(_vm.genders, function (gender) {
+                  return _c("option", [_vm._v(_vm._s(gender))])
+                }),
+                0
+              ),
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "form-group" }, [
